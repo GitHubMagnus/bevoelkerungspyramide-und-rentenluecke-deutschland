@@ -1,0 +1,86 @@
+{
+  "kalibrierung": {
+    "jahr": 2024,
+    "standardbeitragszahlerMio": 34.86,
+    "standardrentnerMio": 16.58,
+    "beitraegeMrd": 305.336,
+    "ausgabenMrd": 397.377,
+    "bundeszuschussMrd": 87.774,
+    "beitragssatzProzent": 18.6,
+    "quelle": "Deutsche Rentenversicherung Bund (2025): Rentenversicherung in Zeitreihen, S. 243-254"
+  },
+  "historie": {
+    "1960": { "beitraege": 6.894, "ausgaben": 9.139, "zuschuss": 2.096, "west": true },
+    "1965": { "beitraege": 11.502, "ausgaben": 14.965, "zuschuss": 3.008, "west": true },
+    "1970": { "beitraege": 21.673, "ausgaben": 24.392, "zuschuss": 3.66, "west": true },
+    "1975": { "beitraege": 38.992, "ausgaben": 48.115, "zuschuss": 6.831, "west": true },
+    "1980": { "beitraege": 56.858, "ausgaben": 67.57, "zuschuss": 10.802, "west": true },
+    "1985": { "beitraege": 70.385, "ausgaben": 83.908, "zuschuss": 12.853, "west": true },
+    "1990": { "beitraege": 89.433, "ausgaben": 103.717, "zuschuss": 15.184, "west": true },
+    "1991": { "beitraege": 106.822, "ausgaben": 125.824, "zuschuss": 19.624 },
+    "1995": { "beitraege": 138.199, "ausgaben": 175.932, "zuschuss": 30.445 },
+    "1996": { "beitraege": 144.499, "ausgaben": 183.163, "zuschuss": 32.331 },
+    "1997": { "beitraege": 152.059, "ausgaben": 187.986, "zuschuss": 35.223 },
+    "1998": { "beitraege": 152.277, "ausgaben": 194.268, "zuschuss": 42.083 },
+    "1999": { "beitraege": 159.16, "ausgaben": 198.667, "zuschuss": 42.533 },
+    "2000": { "beitraege": 162.165, "ausgaben": 205.764, "zuschuss": 42.419 },
+    "2001": { "beitraege": 163.58, "ausgaben": 212.196, "zuschuss": 46.007 },
+    "2002": { "beitraege": 164.426, "ausgaben": 219.63, "zuschuss": 49.264 },
+    "2003": { "beitraege": 168.386, "ausgaben": 225.877, "zuschuss": 53.869 },
+    "2004": { "beitraege": 168.378, "ausgaben": 227.711, "zuschuss": 54.365 },
+    "2005": { "beitraege": 167.98, "ausgaben": 228.111, "zuschuss": 54.812 },
+    "2006": { "beitraege": 179.476, "ausgaben": 228.304, "zuschuss": 54.909 },
+    "2007": { "beitraege": 173.772, "ausgaben": 230.148, "zuschuss": 55.944 },
+    "2008": { "beitraege": 179.089, "ausgaben": 233.65, "zuschuss": 56.431 },
+    "2009": { "beitraege": 180.649, "ausgaben": 239.118, "zuschuss": 57.333 },
+    "2010": { "beitraege": 184.404, "ausgaben": 242.635, "zuschuss": 58.98 },
+    "2011": { "beitraege": 188.999, "ausgaben": 244.71, "zuschuss": 58.882 },
+    "2012": { "beitraege": 192.889, "ausgaben": 249.226, "zuschuss": 60.018 },
+    "2013": { "beitraege": 193.576, "ausgaben": 252.784, "zuschuss": 59.852 },
+    "2014": { "beitraege": 200.938, "ausgaben": 260.363, "zuschuss": 61.335 },
+    "2015": { "beitraege": 206.636, "ausgaben": 271.965, "zuschuss": 62.433 },
+    "2016": { "beitraege": 214.779, "ausgaben": 282.715, "zuschuss": 64.469 },
+    "2017": { "beitraege": 224.635, "ausgaben": 293.232, "zuschuss": 67.793 },
+    "2018": { "beitraege": 235.869, "ausgaben": 302.21, "zuschuss": 69.505 },
+    "2019": { "beitraege": 247.406, "ausgaben": 319.136, "zuschuss": 72.305 },
+    "2020": { "beitraege": 252.192, "ausgaben": 332.66, "zuschuss": 75.302 },
+    "2021": { "beitraege": 262.103, "ausgaben": 341.045, "zuschuss": 78.867 },
+    "2022": { "beitraege": 275.089, "ausgaben": 353.943, "zuschuss": 81.024 },
+    "2023": { "beitraege": 289.11, "ausgaben": 374.33, "zuschuss": 84.258 },
+    "2024": { "beitraege": 305.336, "ausgaben": 397.377, "zuschuss": 87.774 }
+  },
+  "kehrwertHistorie": {
+    "1957": 3.73, "1960": 3.79, "1965": 3.79, "1970": 3.39,
+    "1975": 2.83, "1976": 2.79, "1977": 2.71, "1978": 2.73, "1979": 2.83,
+    "1980": 2.83, "1981": 2.82, "1982": 2.78, "1983": 2.62, "1984": 2.63,
+    "1985": 2.63, "1986": 2.63, "1987": 2.63, "1988": 2.62, "1989": 2.62,
+    "1990": 2.67, "1991": 2.69, "1992": 2.61, "1993": 2.54, "1994": 2.4,
+    "1995": 2.42, "1996": 2.33, "1997": 2.25, "1998": 2.17, "1999": 2.28,
+    "2000": 2.28, "2001": 2.24, "2002": 2.19, "2003": 2.15, "2004": 2.12,
+    "2005": 2.09, "2006": 2.21, "2007": 2.06, "2008": 2.06, "2009": 2.08,
+    "2010": 2.07, "2011": 2.06, "2012": 2.07, "2013": 2.11, "2014": 2.09,
+    "2015": 2.07, "2016": 2.08, "2017": 2.11, "2018": 2.15, "2019": 2.15,
+    "2020": 2.17, "2021": 2.17, "2022": 2.17, "2023": 2.13, "2024": 2.1
+  },
+  "drvKehrwertProjektion": {
+    "2025": 2.1, "2030": 1.97, "2035": 1.79, "2040": 1.74, "2045": 1.73,
+    "hinweis": "DRV-Frühjahrsschätzung Mai 2025, ohne Rentenpaket II"
+  },
+  "quellen": [
+    {
+      "titel": "Deutsche Rentenversicherung Bund (2025): Rentenversicherung in Zeitreihen 2025",
+      "detail": "Einnahmen/Ausgaben allg. RV S. 244f., Bundesmittel S. 243, Vereinfachter Rentnerquotient S. 254",
+      "url": "https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Statistiken-und-Berichte/statistikpublikationen/rv_in_zeitreihen.pdf"
+    },
+    {
+      "titel": "Statistisches Bundesamt (2025): 16. koordinierte Bevölkerungsvorausberechnung",
+      "detail": "Annahmen und Ergebnisse, Basisjahr 2024, Projektion 2025-2070",
+      "url": "https://www.destatis.de/DE/Themen/Gesellschaft-Umwelt/Bevoelkerung/Bevoelkerungsvorausberechnung/annahmen_ergebnisse_16te_kBv.html"
+    },
+    {
+      "titel": "Sozialpolitik-aktuell.de (IAQ, Universität Duisburg-Essen)",
+      "detail": "Abb. VIII.34/VIII.35: Bundesmittel und Anteil der Bundeszuschüsse an den Ausgaben der Rentenversicherung 1960-2024",
+      "url": "https://www.sozialpolitik-aktuell.de/alter-rente-datensammlung.html"
+    }
+  ]
+}

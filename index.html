@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bevölkerungspyramide Deutschland 1950-2070 · Szenarien &amp; Rentenlücke</title>
+<meta name="description" content="Interaktive Bevölkerungspyramide Deutschlands (16. koordinierte Bevölkerungsvorausberechnung) mit Modellrechnung zur Rentenlücke und zum Verhältnis Beitragszahler je Rentner.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="kicker">16. koordinierte Bevölkerungsvorausberechnung · Destatis &amp; DRV-Finanzdaten</p>
+    <h1>Bevölkerungspyramide Deutschland <span class="h1-years">1950-2070</span></h1>
+    <p class="lede">Altersaufbau nach Ist-Daten (1950-2024) und 29 amtlichen Szenarien (bis 2070),
+    ergänzt um eine Modellrechnung zur Rentenlücke und zum Verhältnis
+    Beitragszahler je Rentner.</p>
+  </div>
+</header>
+
+<main>
+  <!-- ======================= STEUERUNG ======================= -->
+  <section class="controls" aria-label="Steuerung">
+    <div class="ctrl ctrl-year">
+      <label class="ctrl-label" for="yearRange">Jahr</label>
+      <div class="year-row">
+        <button id="playBtn" class="play-btn" title="Animation abspielen (Leertaste)" aria-label="Abspielen">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path class="ico-play" d="M7 4.5v15l13-7.5z"/><g class="ico-pause"><rect x="6" y="4.5" width="4.4" height="15" rx="1"/><rect x="13.6" y="4.5" width="4.4" height="15" rx="1"/></g></svg>
+        </button>
+        <input type="number" id="yearOut" class="year-out" min="1950" max="2070" step="1" value="2024" inputmode="numeric" aria-label="Jahr direkt eingeben">
+        <span id="yearBadge" class="year-badge">Ist-Daten</span>
+      </div>
+      <input type="range" id="yearRange" min="1950" max="2070" step="1" value="2024">
+      <div class="range-ticks"><span>1950</span><span>1980</span><span>2010</span><span>2040</span><span>2070</span></div>
+    </div>
+
+    <div class="ctrl ctrl-variant">
+      <label class="ctrl-label" for="variantSel">Szenario ab 2025</label>
+      <select id="variantSel"></select>
+      <p id="variantHint" class="ctrl-hint"></p>
+    </div>
+
+    <div class="ctrl ctrl-ages">
+      <span class="ctrl-label">Altersgrenzen <small>(auch in der Grafik ziehbar)</small></span>
+      <div class="age-inputs">
+        <label>Erwerbseintritt <input type="number" id="ageLow" min="10" max="40" value="20"></label>
+        <label>Renteneintritt <input type="number" id="ageHigh" min="55" max="80" value="67"></label>
+      </div>
+    </div>
+
+    <div class="ctrl ctrl-compare">
+      <label class="ctrl-label" for="compareSel">Vergleichsjahr (Umriss)</label>
+      <select id="compareSel"></select>
+    </div>
+  </section>
+
+  <!-- ======================= PYRAMIDE + KENNZAHLEN ======================= -->
+  <section class="stage">
+    <figure class="pyramid-card">
+      <figcaption class="card-head">
+        <span class="card-title">Altersaufbau der Bevölkerung</span>
+        <span class="legend">
+          <span class="swatch men"></span> Männer
+          <span class="swatch women"></span> Frauen
+          <span class="swatch outline"></span> <span id="legendCompare">Vergleichsjahr</span>
+        </span>
+      </figcaption>
+      <div id="pyramid" class="pyramid-wrap"></div>
+      <div id="tooltip" class="tooltip" hidden></div>
+    </figure>
+
+    <aside class="figures">
+      <div class="fig-block">
+        <p class="fig-label">Bevölkerung gesamt</p>
+        <p class="fig-value"><span id="figTotal">–</span><small> Mio.</small></p>
+      </div>
+      <div class="fig-block groups">
+        <p class="fig-label">Altersgruppen</p>
+        <ul class="group-list">
+          <li><i class="dot young"></i><span id="grpYoungLbl">unter 20</span><b id="grpYoung">–</b></li>
+          <li><i class="dot work"></i><span id="grpWorkLbl">20-66</span><b id="grpWork">–</b></li>
+          <li><i class="dot old"></i><span id="grpOldLbl">ab 67</span><b id="grpOld">–</b></li>
+        </ul>
+      </div>
+
+      <div class="fig-block support">
+        <p class="fig-label">Beitragszahler je Rentner <span id="supportYear" class="fig-year"></span></p>
+        <div id="supportViz" class="support-viz" role="img"></div>
+        <p class="fig-value small"><span id="figSupport">–</span><small> Beitragszahler tragen 1 Rente</small></p>
+        <p class="fig-note" id="supportNote"></p>
+      </div>
+
+      <div class="fig-block gap">
+        <p class="fig-label">Rentenlücke <span id="gapYear" class="fig-year"></span></p>
+        <p class="fig-value accent"><span id="figGap">–</span><small> Mrd. €</small></p>
+        <p class="fig-note" id="gapNote"></p>
+        <p class="fig-sub">Rechnerisch nötiger Beitragssatz: <b id="figBS">–</b> <small>(statt 18,6 %)</small></p>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ======================= ZEITREIHEN ======================= -->
+  <section class="charts">
+    <figure class="chart-card">
+      <figcaption class="card-head">
+        <span class="card-title">Rentenlücke: Ausgaben minus Beitragseinnahmen <small>allgemeine Rentenversicherung, Mrd. €</small></span>
+      </figcaption>
+      <div id="gapChart"></div>
+      <p class="chart-foot">Bis 2024: Ist-Werte (nominal; bis 1990 alte Bundesländer) laut DRV, Rentenversicherung
+      in Zeitreihen 2025. Ab 2025: <span class="proj-hint">demografische Modellrechnung</span> in Preisen von 2024
+      für das gewählte Szenario und die gewählten Altersgrenzen.</p>
+    </figure>
+
+    <figure class="chart-card">
+      <figcaption class="card-head">
+        <span class="card-title">Beitragszahler je Rentner <small>1957-2070</small></span>
+      </figcaption>
+      <div id="supportChart"></div>
+      <p class="chart-foot">Bis 2024: Standardbeitragszahler je Standardrentner (DRV, „vereinfachter
+      Rentnerquotient“, Kehrwert). Ab 2025: <span class="proj-hint">Modellrechnung</span> aus dem Altersaufbau des
+      gewählten Szenarios. Rauten: DRV-eigene Schätzung bis 2045 zum Vergleich.</p>
+    </figure>
+  </section>
+
+  <!-- ======================= METHODIK ======================= -->
+  <section class="method">
+    <details open>
+      <summary><h2>Wie die Rentenlücke berechnet wird</h2></summary>
+      <div class="method-body">
+        <div class="method-col">
+          <h3>1 · Was hier „Rentenlücke“ heißt</h3>
+          <p>Die gesetzliche Rente ist umlagefinanziert: Die Beiträge der Erwerbstätigen von heute
+          bezahlen die Renten von heute. Reichen die Beiträge nicht, springt der Bund ein.
+          Als <b>Rentenlücke</b> wird hier die Differenz <b>Gesamtausgaben − Beitragseinnahmen</b> der
+          allgemeinen Rentenversicherung verwendet. Sie wird real fast vollständig durch
+          Bundeszuschüsse aus Steuermitteln gedeckt (2024: 87,8 Mrd. € Zuschüsse bei 92,0 Mrd. € Lücke).</p>
+          <h3>2 · Vergangenheit: Ist-Werte</h3>
+          <p>Für 1960-2024 werden die amtlichen Rechnungsergebnisse der Deutschen Rentenversicherung
+          verwendet (Beitragseinnahmen, Gesamtausgaben, Bundeszuschüsse; bis 1990 alte Bundesländer,
+          Beträge nominal). Ebenso die historische Zahl der Beitragszahler je Rentner
+          („vereinfachter Rentnerquotient“, Kehrwert).</p>
+        </div>
+        <div class="method-col">
+          <h3>3 · Zukunft: demografisches Modell</h3>
+          <p>Für 2025-2070 wird die Lücke allein aus der <b>Verschiebung des Altersaufbaus</b> des gewählten
+          Szenarios fortgeschrieben. Löhne, Beitragssatz (18,6 %) und Rentenniveau bleiben konstant
+          (Preise von 2024). Kalibrierung am Ist-Jahr 2024:</p>
+          <ul class="formula-list">
+            <li>Beitragszahler(t) = β · Bevölkerung im Erwerbsalter(t) <span class="f-note">β = 34,86 Mio. ÷ Bev. 20-66 (2024) ≈ 0,68</span></li>
+            <li>Rentner(t) = ρ · Bevölkerung ab Renteneintritt(t) <span class="f-note">ρ = 16,58 Mio. ÷ Bev. 67+ (2024) ≈ 0,99</span></li>
+            <li>Beitrag je Zahler = 305,3 Mrd. € ÷ 34,86 Mio. ≈ 8 760 €/Jahr</li>
+            <li>Ausgabe je Rentner = 397,4 Mrd. € ÷ 16,58 Mio. ≈ 23 970 €/Jahr</li>
+            <li><b>Lücke(t) = Rentner(t) · Ausgabe je Rentner − Beitragszahler(t) · Beitrag je Zahler</b></li>
+          </ul>
+          <p>Verschiebst du die Altersgrenzen (z. B. Renteneintritt 70), wandern die Jahrgänge zwischen
+          den Gruppen; die Quoten β und ρ bleiben fix. Das Modell zeigt also den <b>reinen
+          Demografie-Effekt</b>, keine Renten-, Lohn- oder Arbeitsmarktpolitik. Der „nötige Beitragssatz“
+          ist der Satz, der die Modellausgaben ohne Bundeszuschuss decken würde:
+          18,6 % · Ausgaben(t) ÷ Beiträge(t).</p>
+        </div>
+        <div class="method-col">
+          <h3>4 · Grenzen</h3>
+          <p>Keine Lohn- und Rentenanpassung, keine Verhaltensreaktionen (spätere Renteneintritte,
+          Erwerbsquoten, Zuwanderung in Beschäftigung), keine Knappschaft, keine Beamten/Selbstständigen.
+          Ist-Werte der Vergangenheit sind nominal, Modellwerte real in Preisen von 2024; die Niveaus
+          links und rechts der Linie „2025“ sind daher nur eingeschränkt vergleichbar.
+          Zum Realitäts-Check ist im unteren Chart die offizielle DRV-Schätzung bis 2045 eingezeichnet.</p>
+          <h3>Quellen</h3>
+          <ul class="source-list" id="sourceList">
+            <li><a href="https://service.destatis.de/bevoelkerungspyramide/" target="_blank" rel="noopener">Destatis: Interaktive Bevölkerungspyramide (Datengrundlage, 16. kBVB, Stand 26.11.2025)</a></li>
+            <li><a href="https://www.destatis.de/DE/Themen/Gesellschaft-Umwelt/Bevoelkerung/Bevoelkerungsvorausberechnung/annahmen_ergebnisse_16te_kBv.html" target="_blank" rel="noopener">Destatis: Annahmen &amp; Ergebnisse der 16. koordinierten Bevölkerungsvorausberechnung</a></li>
+            <li><a href="https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Statistiken-und-Berichte/statistikpublikationen/rv_in_zeitreihen.pdf" target="_blank" rel="noopener">DRV Bund (2025): Rentenversicherung in Zeitreihen, Finanzdaten S. 243 ff., Rentnerquotient S. 254</a></li>
+            <li><a href="https://www.sozialpolitik-aktuell.de/alter-rente-datensammlung.html" target="_blank" rel="noopener">Sozialpolitik-aktuell.de (IAQ): Bundesmittel an die GRV, Abb. VIII.34/35</a></li>
+          </ul>
+        </div>
+      </div>
+    </details>
+  </section>
+</main>
+
+<footer class="colophon">
+  <p>Datenvisualisierung auf Basis amtlicher Statistik · Bevölkerung: Statistisches Bundesamt (Destatis),
+  16. koordinierte Bevölkerungsvorausberechnung (Basis 2024) &amp; Bevölkerungsfortschreibung ·
+  Rentenfinanzen: Deutsche Rentenversicherung Bund · Modellrechnung Rentenlücke: eigene Berechnung, s. Methodik.</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
