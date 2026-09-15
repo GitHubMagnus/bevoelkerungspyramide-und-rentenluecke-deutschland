@@ -237,7 +237,11 @@
         x1: PY.side - 6, x2: PY.W - PY.side + 6,
         stroke: "transparent", "stroke-width": 16, "pointer-events": "stroke",
       }, g),
-      grip: el("g", { class: "marker-grip", tabindex: 0, role: "slider" }, g),
+      grip: el("g", {
+        class: "marker-grip", tabindex: 0, role: "slider",
+        "aria-label": key === "a1" ? "Erwerbseintritt" : "Renteneintritt",
+        "aria-orientation": "vertical",
+      }, g),
     };
     g.style.touchAction = "none";
     el("rect", { x: PY.W - PY.side - 2, y: -9, width: 44, height: 18, rx: 4 }, markers[key].grip);
@@ -267,6 +271,10 @@
         ln.setAttribute("y2", y);
       }
       markers[key].grip.setAttribute("transform", `translate(0 ${y})`);
+      markers[key].grip.setAttribute("aria-valuenow", age);
+      markers[key].grip.setAttribute("aria-valuemin", key === "a1" ? 1 : state.a1 + 1);
+      markers[key].grip.setAttribute("aria-valuemax", key === "a1" ? state.a2 - 1 : 99);
+      markers[key].grip.setAttribute("aria-valuetext", `${age} Jahre`);
       markers[key].label.textContent = age;
     }
     // Vergleichs-Umriss
@@ -308,7 +316,8 @@
       `<span class="tt-m">♂ ${fmt0.format(p.m[age] * 1000)}</span> · ` +
       `<span class="tt-w">♀ ${fmt0.format(p.w[age] * 1000)}</span>`;
     const wrap = $("pyramid").getBoundingClientRect();
-    tooltip.style.left = (e.clientX - wrap.left) + "px";
+    const halfTooltip = tooltip.offsetWidth / 2;
+    tooltip.style.left = Math.max(halfTooltip, Math.min(wrap.width - halfTooltip, e.clientX - wrap.left)) + "px";
     tooltip.style.top = (e.clientY - wrap.top) + "px";
   });
   overlay.addEventListener("mouseleave", () => { tooltip.hidden = true; });
@@ -357,6 +366,7 @@
   function drawSupport(kehrwert, isModel) {
     const box = $("supportViz");
     box.innerHTML = "";
+    box.setAttribute("aria-label", `${fmt2.format(kehrwert)} Beitragszahler je Rentner`);
     const svg = el("svg", { viewBox: "0 0 250 46", width: "100%", height: "56" });
     box.appendChild(svg);
     // 1 Rentner
@@ -550,6 +560,8 @@
   // ============================================================
   function update() {
     yearOut.value = state.year;
+    $("pyramidYear").textContent = state.year;
+    psvg.setAttribute("aria-label", `Bevölkerungspyramide Deutschland ${state.year}, Männer und Frauen nach Altersjahr`);
     yearBadge.textContent = state.year <= 2024 ? "Ist-Daten" : VARIANTS[state.variant][0];
     yearBadge.classList.toggle("proj", state.year > 2024);
     variantHint.textContent = VARIANTS[state.variant][1];
@@ -591,10 +603,19 @@
   // Animation
   const playBtn = $("playBtn");
   let timer = null;
-  function stop() { clearInterval(timer); timer = null; playBtn.classList.remove("playing"); }
+  function stop() {
+    clearInterval(timer); timer = null;
+    playBtn.classList.remove("playing");
+    playBtn.setAttribute("aria-pressed", "false");
+    playBtn.setAttribute("aria-label", "Animation abspielen");
+    playBtn.title = "Animation abspielen (Leertaste)";
+  }
   function play() {
     if (state.year >= 2070) state.year = 1950;
     playBtn.classList.add("playing");
+    playBtn.setAttribute("aria-pressed", "true");
+    playBtn.setAttribute("aria-label", "Animation pausieren");
+    playBtn.title = "Animation pausieren (Leertaste)";
     timer = setInterval(() => {
       state.year++;
       yearRange.value = state.year;
@@ -604,7 +625,9 @@
   }
   playBtn.addEventListener("click", () => (timer ? stop() : play()));
   document.addEventListener("keydown", e => {
-    if (e.code === "Space" && !/INPUT|SELECT/.test(document.activeElement.tagName)) {
+    // Preserve native keyboard behavior for fields, buttons and the methodology disclosure.
+    if (e.defaultPrevented || e.target.closest('input, select, textarea, button, summary, a, [role="slider"], [contenteditable]')) return;
+    if (e.code === "Space") {
       e.preventDefault();
       timer ? stop() : play();
     }
